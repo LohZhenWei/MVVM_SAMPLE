@@ -1,6 +1,7 @@
 package com.example.hexa_zhenweiloh.mvvm_sample
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -10,8 +11,9 @@ import com.example.hexa_zhenweiloh.mvvm_sample.Room.RoomHelper
 import com.example.hexa_zhenweiloh.mvvm_sample.Room.Table1Entity
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,18 +35,20 @@ class MainActivity : AppCompatActivity() {
 
         roomhelper= RoomHelper()
 
-        async (UI){
+       GlobalScope.launch(Dispatchers.Main) {
             var size= roomhelper.getTable1Test()
             tv_list_size.text= "Room Data List Size : ${size.size}"
         }
 
-        async(UI){
+
+          GlobalScope.launch(Dispatchers.Main){
             mainViewModel.getRoomData().observe(this@MainActivity,object :Observer<List<Table1Entity>>{
                 override fun onChanged(t: List<Table1Entity>?) {
                     tv_list_size_mvvm.text= "Room Data List Size : ${t?.size}"
                 }
             })
         }
+
 
        btn_add_list_item.setOnClickListener{
             roomhelper.insert(Table1Entity(null,"ALI",5))
@@ -66,6 +70,20 @@ class MainActivity : AppCompatActivity() {
             tv_no_mvvm_counter.text= counterReset.toString()
             mainViewModel.data.setValue(Human(counter))
         }
+
+      //  var test : String  ?= null
+
+      //  if (test!= null) a() else b()
+
+     //   test?: a() ?: b()
+    }
+
+    fun a(){
+        Log.d("test123","Function A")
+    }
+
+    fun b(){
+        Log.d("test123","Function B")
     }
 
 }
